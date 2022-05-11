@@ -1,41 +1,20 @@
 import express from 'express';
-import nodemailer from 'nodemailer';
-import config from './config';
-import { prisma } from './prisma';
+import { PrismaFeedbacksRepository } from './repositories/prisma/prisma-feedbacks-repository';
+import { SubmitFeedbackService } from './services/submit-feedback-service';
+import { NodeMailerMailAdapter } from './adapters/nodemailer/nodemailer-mail-adapter';
 
 export const routes = express.Router();
-
-const transport = nodemailer.createTransport({
-  host: "smtp.mailtrap.io",
-  port: 2525,
-  auth: {
-    user: "4c1460f39ae0ce",
-    pass: "143a89be9bcf01"
-  }
-});
 
 routes.post('/feedbacks', async (req, res) => {
   const { type, comment, screenshot } = req.body;
 
-  const feedback = await prisma.feedback.create({
-    data: {
-      type,
-      comment,
-      screenshot,
-    }
-  })
+  // Defining adapters (database and mailer)
+  const prismaFeedbacksRepository = new PrismaFeedbacksRepository();
+  const nodeMailerMailAdapter = new NodeMailerMailAdapter();
 
-  transport.sendMail({
-    from: 'Feedget <oi@feedget.com>',
-    to: config.ADMIN_EMAIL,
-    subject: 'Novo feedback',
-    html: [
-      `<div style="font-family: sans-serif; font-size: 14px; color: #111;">`,
-      `<p>Tipo do feedback: ${type}</p>`,
-      `<p>Comentário: ${comment}</p>`,
-      `</div>`
-    ].join('\n'),
-  });
+  const submitFeedbackService = new SubmitFeedbackService(prismaFeedbacksRepository, nodeMailerMailAdapter);
 
-  return res.status(201).json(feedback);
+  await submitFeedbackService.execute({ type, comment, screenshot })
+
+  return res.status(201).send();
 })
