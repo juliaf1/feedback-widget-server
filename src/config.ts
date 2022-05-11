@@ -12,12 +12,20 @@ interface ENV {
   PORT: number | undefined;
   DATABASE_URL: string | undefined;
   ADMIN_EMAIL: string | undefined;
+  MAILTRAP_PORT: number | undefined;
+  MAILTRAP_HOST: string | undefined;
+  MAILTRAP_USER: string | undefined;
+  MAILTRAP_PASS: string | undefined;
 }
 
 interface Config {
   PORT: number;
   DATABASE_URL: string;
-  ADMIN_EMAIL: string | undefined;
+  ADMIN_EMAIL: string;
+  MAILTRAP_PORT: number;
+  MAILTRAP_HOST: string;
+  MAILTRAP_USER: string;
+  MAILTRAP_PASS: string;
 }
 
 // Loading process.env as ENV interface
@@ -27,6 +35,10 @@ const getConfig = (): ENV => {
     PORT: process.env.PORT ? Number(process.env.PORT) : undefined,
     DATABASE_URL: process.env.DATABASE_URL,
     ADMIN_EMAIL: process.env.ADMIN_EMAIL,
+    MAILTRAP_PORT: process.env.MAILTRAP_PORT ? Number(process.env.MAILTRAP_PORT) : undefined,
+    MAILTRAP_HOST: process.env.MAILTRAP_HOST,
+    MAILTRAP_USER: process.env.MAILTRAP_USER,
+    MAILTRAP_PASS: process.env.MAILTRAP_PASS,
   };
 };
 

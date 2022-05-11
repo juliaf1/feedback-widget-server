@@ -3,11 +3,11 @@ import config from '../../config';
 import { MailAdapter, SendMailData } from '../mail-adapter';
 
 const transport = nodemailer.createTransport({
-  host: "smtp.mailtrap.io",
-  port: 2525,
+  host: config.MAILTRAP_HOST,
+  port: config.MAILTRAP_PORT,
   auth: {
-    user: "4c1460f39ae0ce",
-    pass: "143a89be9bcf01"
+    user: config.MAILTRAP_USER,
+    pass: config.MAILTRAP_PASS
   }
 });
 
