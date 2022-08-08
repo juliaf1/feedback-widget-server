@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import { routes } from './routes';
+import config from './config';
 
 const app = express();
 
@@ -12,6 +13,6 @@ app.use(cors()); // security step to enable only specific front end servers from
 app.use(express.json()); // middleware
 app.use(routes);
 
-app.listen(3333, () => {
+app.listen(config.PORT || 3333, () => {
   console.log('running');
 });
